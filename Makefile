@@ -25,3 +25,28 @@ start_container:
 create_migration:
 	@echo "Creating migration..."
 	sqlx migrate add -r init
+
+migrate_up:
+	@echo "Migrating up..."
+	sqlx migrate run --database-url=${DATABASE_URL}
+
+migrate_down:
+	@echo "Migrating down..."
+	sqlx migrate revert --database-url=${DATABASE_URL}
+
+build:
+	@echo "Building..."
+	if [ -f "${BINARY}" ]; then \
+		rm ${BINARY}; \
+		echo "Deleted ${BINARY}"; \
+	fi
+		echo "Building binary"; \
+		go build -o ${BINARY} cmd/server/*.go; \
+
+run: build
+	@echo "Running..."
+	./${BINARY}
+
+stop:
+	@echo "Stopping server"
+	@-pkill SIGTERM -f "./${BINARY}"
