@@ -3,6 +3,7 @@ package controllers
 import (
 	"coffee-app/helpers"
 	"coffee-app/services"
+	"encoding/json"
 	"net/http"
 )
 
@@ -23,7 +24,7 @@ func GetCoffees(w http.ResponseWriter, r *http.Request) {
 // CreateCoffee POST /coffees
 func CreateCoffee(w http.ResponseWriter, r *http.Request) {
 	coffee := services.Coffee{}
-	err := helpers.ReadJson(w, r, &coffee)
+	err := json.NewDecoder(r.Body).Decode(&coffee)
 	if err != nil {
 		helpers.MessageLogs.ErrorLog.Println(err)
 		helpers.WriteJson(w, http.StatusBadRequest, helpers.Envelop{"error": "Invalid request payload"})

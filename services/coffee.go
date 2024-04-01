@@ -8,7 +8,7 @@ import (
 type Coffee struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
-	Roast     string    `json:"roaster"`
+	Roast     string    `json:"roast"`
 	Image     string    `json:"image"`
 	Region    string    `json:"region"`
 	Price     float32   `json:"price"`
@@ -21,7 +21,7 @@ func (c *Coffee) GetAll() ([]*Coffee, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `SELECT id, name, roaster, image, region, price, grind_unit, created_at, updated_at FROM coffee`
+	query := `SELECT id, name, roast, image, region, price, grind_unit, created_at, updated_at FROM coffees`
 	rows, err := db.QueryContext(ctx, query)
 
 	defer rows.Close()
@@ -47,9 +47,8 @@ func (c *Coffee) Create(coffee Coffee) (*Coffee, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := `INSERT INTO coffee (name, roaster, image, region, price, grind_unit, created_at, updated_at) VALUES ($1, $2, $3, 
-$4, $5, 
-$6) RETURNING *`
+	query := `INSERT INTO coffees (name, roast, image, region, price, grind_unit, created_at, updated_at) VALUES ($1, $2, $3, 
+$4, $5, $6, $7, $8) RETURNING *`
 	_, err := db.ExecContext(ctx, query, coffee.Name, coffee.Roast, coffee.Image, coffee.Region, coffee.Price,
 		coffee.GrindUnit, time.Now(), time.Now())
 
