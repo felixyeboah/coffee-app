@@ -4,6 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+
+	_ "github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/pgconn"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	_ "github.com/lib/pq"
 )
 
 type DB struct {
@@ -16,8 +21,8 @@ const maxConnections = 10
 const maxIdleConnections = 5
 const maxConnectionLifetime = 5 * time.Minute
 
-func connectPostgres(dsn string) (*DB, error) {
-	db, err := sql.Open("postgres", dsn)
+func ConnectPostgres(dsn string) (*DB, error) {
+	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}

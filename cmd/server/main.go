@@ -1,6 +1,7 @@
 package main
 
 import (
+	"coffee-app/db"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
@@ -47,16 +48,26 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	// setting up configuration
 	config := Config{
 		Port: os.Getenv("PORT"),
 	}
 
-	// TODO: connection to db
+	// connecting database
+	dsn := os.Getenv("DSN")
+	if dsn == "" {
+		log.Fatal("DSN is required")
+	}
+	dbConnection, err := db.ConnectPostgres(dsn)
+	if err != nil {
+		log.Fatal("Error connecting to the database", err)
+	}
+	defer dbConnection.DB.Close()
 
+	// running the application
 	app := &Application{
 		Config: config,
 	}
-
 	err = app.Run()
 	if err != nil {
 		log.Fatal(err)
