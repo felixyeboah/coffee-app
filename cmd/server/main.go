@@ -2,6 +2,9 @@ package main
 
 import (
 	"coffee-app/db"
+	"coffee-app/routes"
+	"coffee-app/services"
+	"database/sql"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
@@ -15,6 +18,7 @@ type Config struct {
 
 type Application struct {
 	Config Config
+	Models services.Models
 }
 
 func (app *Application) Run() error {
@@ -31,7 +35,8 @@ func (app *Application) Run() error {
 	fmt.Println("Server is running on port", port)
 
 	server := &http.Server{
-		Addr: fmt.Sprintf(":%s", port),
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: routes.Routes(),
 	}
 
 	err = server.ListenAndServe()
@@ -62,11 +67,17 @@ func main() {
 	if err != nil {
 		log.Fatal("Error connecting to the database", err)
 	}
-	defer dbConnection.DB.Close()
+	defer func(DB *sql.DB) {
+		err := DB.Close()
+		if err != nil {
+
+		}
+	}(dbConnection.DB)
 
 	// running the application
 	app := &Application{
 		Config: config,
+		Models: services.New(dbConnection.DB),
 	}
 	err = app.Run()
 	if err != nil {
