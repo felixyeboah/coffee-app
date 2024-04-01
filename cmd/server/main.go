@@ -70,7 +70,7 @@ func main() {
 	defer func(DB *sql.DB) {
 		err := DB.Close()
 		if err != nil {
-
+			log.Fatal("Error closing the database connection", err)
 		}
 	}(dbConnection.DB)
 
