@@ -23,6 +23,9 @@ func Routes() http.Handler {
 
 	router.Get("/api/v1/coffees", controllers.GetCoffees)
 	router.Post("/api/v1/coffees", controllers.CreateCoffee)
+	router.Get("/api/v1/coffees/{id}", controllers.GetCoffee)
+	router.Put("/api/v1/coffees/{id}", controllers.UpdateCoffee)
+	router.Delete("/api/v1/coffees/{id}", controllers.DeleteCoffee)
 
 	return router
 }
